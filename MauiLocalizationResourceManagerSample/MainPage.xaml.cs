@@ -1,22 +1,30 @@
-﻿namespace MauiLocalizationResourceManagerSample;
+﻿using LocalizationResourceManager.Maui;
+
+namespace MauiLocalizationResourceManagerSample;
 
 public partial class MainPage : ContentPage
 {
 	int count = 0;
+	ILocalizationResourceManager _localizationResourceManager;
+	LocalizedString _counterClicked;
 
-	public MainPage()
+	public MainPage(ILocalizationResourceManager localizationResourceManager)
 	{
 		InitializeComponent();
-	}
+        _localizationResourceManager = localizationResourceManager;
+		_counterClicked = new(() => _localizationResourceManager["CounterClicked"]);
+    }
 
 	private void OnCounterClicked(object sender, EventArgs e)
 	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
+		if (_localizationResourceManager.CurrentCulture.TwoLetterISOLanguageName == "nl")
+			_localizationResourceManager.CurrentCulture = new System.Globalization.CultureInfo("en");
 		else
-			CounterBtn.Text = $"Clicked {count} times";
+			_localizationResourceManager.CurrentCulture = new System.Globalization.CultureInfo("nl");
+
+        count++;
+
+		CounterBtn.Text = string.Format(_counterClicked.Localized, count);
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LocalizationResourceManager.Maui;
+using MauiLocalizationResourceManagerSample.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace MauiLocalizationResourceManagerSample;
 
@@ -9,6 +11,11 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseLocalizationResourceManager(settings =>
+			{
+				settings.RestoreLatestCulture(true);
+				settings.AddResource(AppResources.ResourceManager);
+			})
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -18,6 +25,8 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+
+		builder.Services.AddTransient<MainPage>();
 
 		return builder.Build();
 	}
